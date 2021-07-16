@@ -1,0 +1,250 @@
+# If there is no arguments
+if [ "$1" == "" ] || [ "$1" == "help" ]
+then
+    echo -e "\n"
+    echo "Enter 'beaver action' where action is one of the following:"
+    echo -e "\n"
+    echo   "create            Will create the resources needed to a new project into the current directory"
+    echo   "delete            Will delete all project files. Be careful"
+    echo   "clean             Will delete all compilable and executable files"
+    echo   "compile           Will generate make file then compile using the make file."
+    echo   "run               Will generate make file then compile using the make file then run the project"
+    echo   "clean             Remove all binaries and intermediate binaries and project files."
+    echo   "codelite          Generate CodeLite project files"
+    echo   "gmake2            Generate GNU makefiles for Linux"
+    echo   "vs2005            Generate Visual Studio 2005 project files"
+    echo   "vs2008            Generate Visual Studio 2008 project files"
+    echo   "vs2010            Generate Visual Studio 2010 project files"
+    echo   "vs2012            Generate Visual Studio 2012 project files"
+    echo   "vs2013            Generate Visual Studio 2013 project files"
+    echo   "vs2015            Generate Visual Studio 2015 project files"
+    echo   "vs2017            Generate Visual Studio 2017 project files"
+    echo   "vs2019            Generate Visual Studio 2019 project files"
+    echo   "xcode4            Generate Apple Xcode 4 project files"
+elif [ "$1" == "create" ]
+then
+    # Create folders
+    mkdir ProjectFolder
+    mkdir vendor
+    mkdir bin
+    mkdir bin-int
+    cd ProjectFolder
+    mkdir include
+    mkdir cpp
+
+    # Create cpp main file
+    cd cpp
+    # Write cpp main code
+    echo -e "#include<iostream>\n" > main.cpp
+    echo -e '#include "program_info.h"\n' >> main.cpp
+    #echo -e "\n" >> main.cpp 
+    # echo -e "\n" makes a paragraph
+    echo -e "int main(int argc, char *argv[]) {" >> main.cpp
+    echo '   // Enable arguments for our program' >> main.cpp
+    echo -e '   program_inform::show_info(argc, argv);\n' >> main.cpp
+    echo -e '   std::cout << "Hello World!" << std::endl;\n' >> main.cpp
+    echo "   return 0;" >> main.cpp
+    echo "}">> main.cpp
+    # ">" writes and deletes/creates, ">>" update the file
+
+    # Create program_info.cpp file
+    echo -e "#include<iostream>" > program_info.cpp
+    echo -e "#include<string.h>\n" >> program_info.cpp
+    echo -e '#include "program_info.h"\n' >> program_info.cpp
+    echo -e 'namespace program_inform {' >> program_info.cpp
+    echo -e '   void show_info(int argc, char *argv[]) {' >> program_info.cpp
+    echo -e "       // If we don't have arguments" >> program_info.cpp
+    echo -e '       if (argc == 1) return;\n' >> program_info.cpp
+    echo -e '       if (strcmp("--version", argv[1]) == 0) {' >> program_info.cpp
+    echo -e '           std::cout << "v0.0.1" << std::endl;' >> program_info.cpp
+    echo -e '       } else if (strcmp("--name", argv[1]) == 0) {' >> program_info.cpp
+    echo -e '           std::cout << argv[0] << std::endl;' >> program_info.cpp
+    echo -e '       } else if (strcmp("--help", argv[1]) == 0) {' >> program_info.cpp
+    echo -e '           std::cout << "Available arguments:" << std::endl;' >> program_info.cpp
+    echo -e '           std::cout << "--name Tell you the name of the program" << std::endl;' >> program_info.cpp
+    echo -e '           std::cout << "--version Provides you information about the program" << std::endl;' >> program_info.cpp
+    echo -e '       } else {' >> program_info.cpp
+    echo -e '           std::cout << "Argument not recognised. Type --help for more informations." << std::endl;' >> program_info.cpp
+    echo -e '       }\n' >> program_info.cpp
+    echo -e '       // Warn the user that our program only can take one argument' >> program_info.cpp
+    echo -e '       if (argc > 2) {' >> program_info.cpp
+    echo -e '           std::cout << "This program should have only one argument. Type --help for more informations." << std::endl;' >> program_info.cpp
+    echo -e '       }\n' >> program_info.cpp
+    echo -e '       exit(0);' >> program_info.cpp
+    echo -e '   }\n' >> program_info.cpp
+    echo -e '}' >> program_info.cpp
+
+    # Go to include directory
+    cd ..
+    cd include
+    echo -e '#pragma once\n' > program_info.h
+    echo -e 'namespace program_inform {' >> program_info.h
+    echo -e '   // argc -> Number of arguments' >> program_info.h    
+    echo -e '   // argv[0] -> Name of the program' >> program_info.h
+    echo -e '   // argv[1] -> First argument' >> program_info.h
+    echo -e '   void show_info(int argc, char *argv[]);\n' >> program_info.h
+    echo -e '} // namespace program_inform\n' >> program_info.h
+
+
+    # Fallback to the folder of the main process
+    cd ..
+    cd ..
+
+    # Create first lua file
+    echo 'workspace "Workspace"'> premake5.lua
+    echo -e '    architecture "x64"\n'>> premake5.lua
+    echo '    configurations {'>> premake5.lua
+    echo '        "Release",'>> premake5.lua
+    echo '        "Debug"'>> premake5.lua
+    echo -e '    }\n'>> premake5.lua
+    echo -e '    startproject "ProjectFolder"\n'>> premake5.lua
+    echo 'outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"'>> premake5.lua
+    echo -e '--ex.: {Debug}{Windows}{x64}\n'>> premake5.lua
+    echo "-- Look for premake5.lua file of the project">> premake5.lua
+    echo -e 'include "ProjectFolder"\n'>> premake5.lua
+    echo "newaction {">> premake5.lua
+    echo '    trigger = "clean",'>> premake5.lua
+    echo '    description = "Remove all binaries and intermediate binaries, and vs files.",'>> premake5.lua
+    echo '    execute = function()'>> premake5.lua
+    echo '        print("Remove binaries")'>> premake5.lua
+    echo '        os.rmdir("./bin")'>> premake5.lua
+    echo '        print("Removing intermediate binaries")'>> premake5.lua
+    echo '        os.rmdir("./bin-int")'>> premake5.lua
+    echo '        print("Removing project files")'>> premake5.lua
+    echo '        os.rmdir("./.vs")'>> premake5.lua
+    echo '        os.remove("**.sln")'>> premake5.lua
+    echo '        os.remove("**.vcxproj")'>> premake5.lua
+    echo '        os.remove("**.vcxproj.filters")'>> premake5.lua
+    echo '        os.remove("**.vcxproj.user")'>> premake5.lua
+    echo '        os.remove("**.vcxproj")'>> premake5.lua
+    echo '        print("Done")'>> premake5.lua
+    echo '    end'>> premake5.lua
+    echo -e '}\n'>> premake5.lua
+
+    cd ProjectFolder
+
+    # Create the second lua file
+    echo '-- Catch the current directory path' > premake5.lua
+    echo 'handle = io.popen("pwd")' >> premake5.lua
+    echo -e 'project_name = handle:read("*a")\n' >> premake5.lua
+    echo '-- Remove the current folder "ProjectFolder" from our path' >> premake5.lua
+    echo '-- ex.: ~/Documents/001_HelloWorld/ProjectFolder -> ~/Documents/001_HelloWorld/' >> premake5.lua
+    echo 'tmp = ""' >> premake5.lua
+    echo 'for p in string.gmatch(project_name, "%S+/") do' >> premake5.lua
+    echo '    tmp = tmp .. p' >> premake5.lua
+    echo -e 'end\n' >> premake5.lua
+    echo '-- Removing the last "/"' >> premake5.lua
+    echo '-- ex.: ~/Documents/001_HelloWorld/ -> ~/Documents/001_HelloWorld\n' >> premake5.lua
+    echo -e 'project_name = string.sub(tmp, 1, -2)\n' >> premake5.lua
+    echo '-- We will just stay with 001_HelloWorld' >> premake5.lua
+    echo 'name_buffer = ""' >> premake5.lua
+    echo '    while ( true ) do' >> premake5.lua
+    echo '        -- Catch the index where we have the first slash' >> premake5.lua
+    echo '        -- ex.: ~/Documents/001_HelloWorld - The index of the first slash is 1' >> premake5.lua
+    echo '        slash_index = string.find(project_name, "/")' >> premake5.lua
+    echo -e '        name_buffer = ""\n' >> premake5.lua
+    echo '        -- When we will have no slashes, we also will have a null value in slash_index variable,' >> premake5.lua
+    echo '        -- so we will break the while loop here' >> premake5.lua
+    echo '        if slash_index == nil then' >> premake5.lua
+    echo '            break' >> premake5.lua
+    echo -e '        end\n' >> premake5.lua
+    echo '        -- To remove the all content until we fint the first slash' >> premake5.lua
+    echo '        for i = slash_index + 1, string.len(project_name) do' >> premake5.lua
+    echo '            name_buffer = name_buffer .. string.sub(project_name, i, i)' >> premake5.lua
+    echo '        end' >> premake5.lua
+    echo '        project_name = name_buffer' >> premake5.lua
+    echo -e '    end\n' >> premake5.lua
+    echo 'project (project_name)'>> premake5.lua
+    echo '    kind "ConsoleApp"'>> premake5.lua
+    echo '    language "C++"'>> premake5.lua
+    echo '    cppdialect "C++17" -- cpp 2017 version'>> premake5.lua
+    echo '    -- In case of importing libraries'>> premake5.lua
+    echo -e '    staticruntime "on"\n'>> premake5.lua
+    echo '    targetdir("../bin/" .. outputdir .. "/%{prj.name}") -- Inside the current directory. '..' is contenation in Lua--'>> premake5.lua
+    echo -e '    objdir("../bin-int/" .. outputdir .. "/%{prj.name}")\n'>> premake5.lua
+    echo '    files {'>> premake5.lua
+    echo '        "cpp/**.cpp", -- Look for .cpp file in subdirectories'>> premake5.lua
+    echo '        "include/**.h"'>> premake5.lua
+    echo '        -- "include/**.hpp"'>> premake5.lua
+    echo -e '    }\n'>> premake5.lua
+    echo '    includedirs {'>> premake5.lua
+    echo '        "include"'>> premake5.lua
+    echo -e '    }\n'>> premake5.lua
+    echo '    defines {'>> premake5.lua
+    echo '        "LINUX"'>> premake5.lua
+    echo -e '    }\n'>> premake5.lua
+    echo '    filter { "configurations:Debug" }'>> premake5.lua
+#    echo '        buildoptions "/MTd"' -- d is just for debug>> premake5.lua
+    echo '        runtime "Debug"'>> premake5.lua
+    echo -e '        symbols "on" -- To generate debug symbols\n'>> premake5.lua
+    echo '    filter { "configurations:Release" }'>> premake5.lua
+#    echo '        buildoptions "/MT"' >> premake5.lua
+    echo '        runtime "Release"'>> premake5.lua
+    echo '        optimize "on"'>> premake5.lua
+    cd ..
+
+    # Download premake5.tar.gz and extrate it
+    cd vendor
+    wget "https://github.com/premake/premake-core/releases/download/v5.0.0-alpha16/premake-5.0.0-alpha16-linux.tar.gz"
+    tar -xzvf premake-5.0.0-alpha16-linux.tar.gz
+    rm -r premake-5.0.0-alpha16-linux.tar.gz
+    
+    echo -e '\nDone.'
+    
+    cd ..
+elif [ "$1" == "delete" ]
+then
+    # Delete directories
+    mkdir garbage
+    mv buildcpp.sh .buildcpp.sh
+    mv garbage .garbage
+    mv * .garbage
+    mv .garbage garbage
+    rm -r garbage
+    mv .buildcpp.sh buildcpp.sh
+
+    echo 'Project has been deleted'
+
+elif [ "$1" == "compile" ]
+then
+    # Create makefile gmake
+    ./vendor/premake5 gmake
+    make
+
+elif [ "$1" == "run" ]
+then
+    # Create makefile gmake
+    ./vendor/premake5 gmake
+    make
+
+    # Check if compilation was a success and exit if it's not
+    # The return value is stored in $?
+    if [ $? -ne 0 ]
+    then
+        echo "Compilation failed, aborting..."
+        exit 
+    fi
+    # Run
+    cd bin
+    # Create a variable that will get the folder that has the word "...linux..." in its name
+    var=$(find -name *linux*)
+    echo -e ""
+    ./$var/*/*
+    cd ..
+elif [ "$1" == "clean" ]
+then
+    # Delete makefiles
+    rm Makefile
+    cd ProjectFolder
+    rm Makefile
+    cd ..
+
+    # Delete executable files
+    cd bin
+    rm -r *
+    cd ..
+    cd bin-int
+    rm -r *
+    cd ..
+fi
+exit
