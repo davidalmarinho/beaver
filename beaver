@@ -1,96 +1,4 @@
-# If there is no arguments
-if [ "$1" == "" ] || [ "$1" == "help" ]
-then
-    echo -e "\n"
-    echo "Enter 'beaver action' where action is one of the following:"
-    echo -e "\n"
-    echo   "create            Will create the resources needed to a new project into the current directory"
-    echo   "delete            Will delete all project files. Be careful"
-    echo   "clean             Will delete all compilable and executable files"
-    echo   "compile           Will generate make file then compile using the make file."
-    echo   "run               Will generate make file then compile using the make file then run the project"
-    echo   "clean             Remove all binaries and intermediate binaries and project files."
-    echo   "codelite          Generate CodeLite project files"
-    echo   "gmake2            Generate GNU makefiles for Linux"
-    echo   "vs2005            Generate Visual Studio 2005 project files"
-    echo   "vs2008            Generate Visual Studio 2008 project files"
-    echo   "vs2010            Generate Visual Studio 2010 project files"
-    echo   "vs2012            Generate Visual Studio 2012 project files"
-    echo   "vs2013            Generate Visual Studio 2013 project files"
-    echo   "vs2015            Generate Visual Studio 2015 project files"
-    echo   "vs2017            Generate Visual Studio 2017 project files"
-    echo   "vs2019            Generate Visual Studio 2019 project files"
-    echo   "xcode4            Generate Apple Xcode 4 project files"
-elif [ "$1" == "create" ]
-then
-    # Create folders
-    mkdir ProjectFolder
-    mkdir vendor
-    mkdir bin
-    mkdir bin-int
-    cd ProjectFolder
-    mkdir include
-    mkdir cpp
-
-    # Create cpp main file
-    cd cpp
-    # Write cpp main code
-    echo -e "#include<iostream>\n" > main.cpp
-    echo -e '#include "program_info.h"\n' >> main.cpp
-    #echo -e "\n" >> main.cpp 
-    # echo -e "\n" makes a paragraph
-    echo -e "int main(int argc, char *argv[]) {" >> main.cpp
-    echo '   // Enable arguments for our program' >> main.cpp
-    echo -e '   program_inform::show_info(argc, argv);\n' >> main.cpp
-    echo -e '   std::cout << "Hello World!" << std::endl;\n' >> main.cpp
-    echo "   return 0;" >> main.cpp
-    echo "}">> main.cpp
-    # ">" writes and deletes/creates, ">>" update the file
-
-    # Create program_info.cpp file
-    echo -e "#include<iostream>" > program_info.cpp
-    echo -e "#include<string.h>\n" >> program_info.cpp
-    echo -e '#include "program_info.h"\n' >> program_info.cpp
-    echo -e 'namespace program_inform {' >> program_info.cpp
-    echo -e '   void show_info(int argc, char *argv[]) {' >> program_info.cpp
-    echo -e "       // If we don't have arguments" >> program_info.cpp
-    echo -e '       if (argc == 1) return;\n' >> program_info.cpp
-    echo -e '       if (strcmp("--version", argv[1]) == 0) {' >> program_info.cpp
-    echo -e '           std::cout << "v0.0.1" << std::endl;' >> program_info.cpp
-    echo -e '       } else if (strcmp("--name", argv[1]) == 0) {' >> program_info.cpp
-    echo -e '           std::cout << argv[0] << std::endl;' >> program_info.cpp
-    echo -e '       } else if (strcmp("--help", argv[1]) == 0) {' >> program_info.cpp
-    echo -e '           std::cout << "Available arguments:" << std::endl;' >> program_info.cpp
-    echo -e '           std::cout << "--name Tell you the name of the program" << std::endl;' >> program_info.cpp
-    echo -e '           std::cout << "--version Provides you information about the program" << std::endl;' >> program_info.cpp
-    echo -e '       } else {' >> program_info.cpp
-    echo -e '           std::cout << "Argument not recognised. Type --help for more informations." << std::endl;' >> program_info.cpp
-    echo -e '       }\n' >> program_info.cpp
-    echo -e '       // Warn the user that our program only can take one argument' >> program_info.cpp
-    echo -e '       if (argc > 2) {' >> program_info.cpp
-    echo -e '           std::cout << "This program should have only one argument. Type --help for more informations." << std::endl;' >> program_info.cpp
-    echo -e '       }\n' >> program_info.cpp
-    echo -e '       exit(0);' >> program_info.cpp
-    echo -e '   }\n' >> program_info.cpp
-    echo -e '}' >> program_info.cpp
-
-    # Go to include directory
-    cd ..
-    cd include
-    echo -e '#pragma once\n' > program_info.h
-    echo -e 'namespace program_inform {' >> program_info.h
-    echo -e '   // argc -> Number of arguments' >> program_info.h    
-    echo -e '   // argv[0] -> Name of the program' >> program_info.h
-    echo -e '   // argv[1] -> First argument' >> program_info.h
-    echo -e '   void show_info(int argc, char *argv[]);\n' >> program_info.h
-    echo -e '} // namespace program_inform\n' >> program_info.h
-
-
-    # Fallback to the folder of the main process
-    cd ..
-    cd ..
-
-    # Create first lua file
+create_first_premake_file() {
     echo 'workspace "Workspace"'> premake5.lua
     echo -e '    architecture "x64"\n'>> premake5.lua
     echo '    configurations {'>> premake5.lua
@@ -117,13 +25,38 @@ then
     echo '        os.remove("**.vcxproj.filters")'>> premake5.lua
     echo '        os.remove("**.vcxproj.user")'>> premake5.lua
     echo '        os.remove("**.vcxproj")'>> premake5.lua
+    echo '        os.remove("**.vcproj")'>> premake5.lua
+    echo '        os.remove("**.project")'>> premake5.lua
+    echo -e '        os.remove("**Makefile")\n'>> premake5.lua
+    echo '        -- TODO: fix this'>> premake5.lua
+    echo '        os.remove("*.xcodeproj")'>> premake5.lua
+    echo '        os.rmdir("./*xcworkspace")'>> premake5.lua
+    echo '        os.remove("**.workspace")'>> premake5.lua
     echo '        print("Done")'>> premake5.lua
     echo '    end'>> premake5.lua
     echo -e '}\n'>> premake5.lua
+    echo "newaction {">> premake5.lua
+    echo '    trigger = "compile_every_way",'>> premake5.lua
+    echo '    description = "Created for debug purposes.",'>> premake5.lua
+    echo '    execute = function()'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 codelite")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 xcode4")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 gmake")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 gmake2")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2005")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2008")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2010")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2012")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2013")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2015")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2017")'>> premake5.lua
+    echo '        os.execute("./vendor/premake5 vs2019")'>> premake5.lua
+    echo '    end'>> premake5.lua
+    echo -e '}\n'>> premake5.lua
+    return
+}
 
-    cd ProjectFolder
-
-    # Create the second lua file
+create_second_premake_file() {
     echo '-- Catch the current directory path' > premake5.lua
     echo 'handle = io.popen("pwd")' >> premake5.lua
     echo -e 'project_name = handle:read("*a")\n' >> premake5.lua
@@ -181,6 +114,116 @@ then
 #    echo '        buildoptions "/MT"' >> premake5.lua
     echo '        runtime "Release"'>> premake5.lua
     echo '        optimize "on"'>> premake5.lua
+}
+
+create_cpp_main_file() {
+    echo -e "#include<iostream>\n" > main.cpp
+    echo -e '#include "program_info.h"\n' >> main.cpp
+    # echo -e "\n" >> main.cpp 
+    # echo -e "\n" makes a paragraph
+    echo -e "int main(int argc, char *argv[]) {" >> main.cpp
+    echo '   // Enable arguments for our program' >> main.cpp
+    echo -e '   program_inform::show_info(argc, argv);\n' >> main.cpp
+    echo -e '   std::cout << "Hello World!" << std::endl;\n' >> main.cpp
+    echo "   return 0;" >> main.cpp
+    echo "}">> main.cpp
+    # ">" writes and deletes/creates, ">>" update the file
+
+    # Create program_info.cpp file
+    echo -e "#include<iostream>" > program_info.cpp
+    echo -e "#include<string.h>\n" >> program_info.cpp
+    echo -e '#include "program_info.h"\n' >> program_info.cpp
+    echo -e 'namespace program_inform {' >> program_info.cpp
+    echo -e '   void show_info(int argc, char *argv[]) {' >> program_info.cpp
+    echo -e "       // If we don't have arguments" >> program_info.cpp
+    echo -e '       if (argc == 1) return;\n' >> program_info.cpp
+    echo -e '       if (strcmp("--version", argv[1]) == 0) {' >> program_info.cpp
+    echo -e '           std::cout << "v0.0.1" << std::endl;' >> program_info.cpp
+    echo -e '       } else if (strcmp("--name", argv[1]) == 0) {' >> program_info.cpp
+    echo -e '           std::cout << argv[0] << std::endl;' >> program_info.cpp
+    echo -e '       } else if (strcmp("--help", argv[1]) == 0) {' >> program_info.cpp
+    echo -e '           std::cout << "Available arguments:" << std::endl;' >> program_info.cpp
+    echo -e '           std::cout << "--name Tell you the name of the program" << std::endl;' >> program_info.cpp
+    echo -e '           std::cout << "--version Provides you information about the program" << std::endl;' >> program_info.cpp
+    echo -e '       } else {' >> program_info.cpp
+    echo -e '           std::cout << "Argument not recognised. Type --help for more informations." << std::endl;' >> program_info.cpp
+    echo -e '       }\n' >> program_info.cpp
+    echo -e '       // Warn the user that our program only can take one argument' >> program_info.cpp
+    echo -e '       if (argc > 2) {' >> program_info.cpp
+    echo -e '           std::cout << "This program should have only one argument. Type --help for more informations." << std::endl;' >> program_info.cpp
+    echo -e '       }\n' >> program_info.cpp
+    echo -e '       exit(0);' >> program_info.cpp
+    echo -e '   }\n' >> program_info.cpp
+    echo -e '}' >> program_info.cpp
+}
+
+create_header_file() {
+    echo -e '#pragma once\n' > program_info.h
+    echo -e 'namespace program_inform {' >> program_info.h
+    echo -e '   // argc -> Number of arguments' >> program_info.h    
+    echo -e '   // argv[0] -> Name of the program' >> program_info.h
+    echo -e '   // argv[1] -> First argument' >> program_info.h
+    echo -e '   void show_info(int argc, char *argv[]);\n' >> program_info.h
+    echo -e '} // namespace program_inform\n' >> program_info.h
+}
+
+# If there is no arguments
+if [ "$1" == "" ] || [ "$1" == "help" ]
+then
+    echo -e "\n"
+    echo "Enter 'beaver action' where action is one of the following:"
+    echo -e "\n"
+    echo   "create            Will create the resources needed to a new project into the current directory"
+    echo   "delete            Will delete all project files. Be careful"
+    echo   "clean             Will delete all compilable and executable files"
+    echo   "compile           Will generate make file then compile using the make file."
+    echo   "run               Will generate make file then compile using the make file then run the project"
+    echo   "clean             Remove all binaries and intermediate binaries and project files."
+    echo   "codelite          Generate CodeLite project files"
+    echo   "gmake2            Generate GNU makefiles for Linux"
+    echo   "vs2005            Generate Visual Studio 2005 project files"
+    echo   "vs2008            Generate Visual Studio 2008 project files"
+    echo   "vs2010            Generate Visual Studio 2010 project files"
+    echo   "vs2012            Generate Visual Studio 2012 project files"
+    echo   "vs2013            Generate Visual Studio 2013 project files"
+    echo   "vs2015            Generate Visual Studio 2015 project files"
+    echo   "vs2017            Generate Visual Studio 2017 project files"
+    echo   "vs2019            Generate Visual Studio 2019 project files"
+    echo   "xcode4            Generate Apple Xcode 4 project files"
+elif [ "$1" == "create" ]
+then
+    # Create folders
+    mkdir ProjectFolder
+    mkdir vendor
+    mkdir bin
+    mkdir bin-int
+    cd ProjectFolder
+    mkdir include
+    mkdir cpp
+
+    # Create cpp main file
+    cd cpp
+    # Write cpp main code
+    create_cpp_main_file
+
+    # Go to include directory
+    cd ..
+    cd include
+    create_header_file
+
+
+    # Fallback to the folder of the main process
+    cd ..
+    cd ..
+
+    # Create first lua file
+    create_first_premake_file
+
+    cd ProjectFolder
+
+    # Create the second lua file
+    create_second_premake_file
+
     cd ..
 
     # Download premake5.tar.gz and extrate it
@@ -195,15 +238,10 @@ then
 elif [ "$1" == "delete" ]
 then
     # Delete directories
-    mkdir garbage
-    mv buildcpp.sh .buildcpp.sh
-    mv garbage .garbage
-    mv * .garbage
-    mv .garbage garbage
-    rm -r garbage
-    mv .buildcpp.sh buildcpp.sh
 
     echo 'Project has been deleted'
+    ./vendor/premake5 clean
+    # TODO: End this
 
 elif [ "$1" == "compile" ]
 then
@@ -233,18 +271,6 @@ then
     cd ..
 elif [ "$1" == "clean" ]
 then
-    # Delete makefiles
-    rm Makefile
-    cd ProjectFolder
-    rm Makefile
-    cd ..
-
-    # Delete executable files
-    cd bin
-    rm -r *
-    cd ..
-    cd bin-int
-    rm -r *
-    cd ..
+    ./vendor/premake5 clean
 fi
 exit
