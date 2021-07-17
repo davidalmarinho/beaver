@@ -30,7 +30,7 @@ We have to
 
 - [Create directory for beaver](#create-directory-for-beaver)
 
-- [Set beaver's path](#set-beaver's-path)
+- [Set beaver's path](#set-beavers-path)
 
 - [Try it](#try-it)
 
