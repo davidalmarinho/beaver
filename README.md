@@ -39,17 +39,16 @@ We have to
 First you need to do is to open your terminal and type:
 
 ```shell
-mkdir ~/beaver
+mkdir ~/.beaver
 ```
 
 This will create the folder that will keep the beaver.
 
-After, download beaver and put it in this folder unziped.
+After, download beaver and put it in this folder.
 
-For last, trade the name 'beaver' to '.beaver' just to hide the folder.
 
 ```shell
-mv ~/beaver ~/.beaver
+git clone git@github.com:davidalmarinho/beaver.git  ~/.beaver
 ```
 
 #### Set beaver's path
