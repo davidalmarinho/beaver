@@ -27,11 +27,17 @@ create_first_premake_file() {
     echo '        os.remove("**.vcxproj")'>> premake5.lua
     echo '        os.remove("**.vcproj")'>> premake5.lua
     echo '        os.remove("**.project")'>> premake5.lua
-    echo -e '        os.remove("**Makefile")\n'>> premake5.lua
-    echo '        -- TODO: fix this'>> premake5.lua
-    echo '        os.remove("*.xcodeproj")'>> premake5.lua
-    echo '        os.rmdir("./*xcworkspace")'>> premake5.lua
-    echo '        os.remove("**.workspace")'>> premake5.lua
+    echo '        os.remove("**Makefile")'>> premake5.lua
+    echo -e '        os.remove("*.workspace")\n'>> premake5.lua
+    echo '        workspace_dir_name = os.matchdirs("*.xcworkspace")' >> premake5.lua
+    echo '        -- This will return a list, where the index number 1 stores the name of the folder' >> premake5.lua
+    echo '        if workspace_dir_name[1] ~= nil then' >> premake5.lua
+    echo '            os.rmdir(workspace_dir_name[1])' >> premake5.lua
+    echo -e '        end\n' >> premake5.lua
+    echo '        xcodeproj_name = os.matchdirs("ProjectFolder/*.xcodeproj")' >> premake5.lua
+    echo '        if xcodeproj_name[1] ~= nil then' >> premake5.lua
+    echo '            os.rmdir(xcodeproj_name[1])' >> premake5.lua
+    echo '        end' >> premake5.lua
     echo '        print("Done")'>> premake5.lua
     echo '    end'>> premake5.lua
     echo -e '}\n'>> premake5.lua
@@ -167,12 +173,9 @@ create_header_file() {
     echo -e '} // namespace program_inform\n' >> program_info.h
 }
 
-# If there is no arguments
-if [ "$1" == "" ] || [ "$1" == "help" ]
-then
+call_help() {
     echo -e "\n"
-    echo "Enter 'beaver action' where action is one of the following:"
-    echo -e "\n"
+    echo -e "Enter 'beaver action' where action is one of the following:\n"
     echo   "create            Will create the resources needed to a new project into the current directory"
     echo   "delete            Will delete all project files. Be careful"
     echo   "clean             Will delete all compilable and executable files"
@@ -190,6 +193,13 @@ then
     echo   "vs2017            Generate Visual Studio 2017 project files"
     echo   "vs2019            Generate Visual Studio 2019 project files"
     echo   "xcode4            Generate Apple Xcode 4 project files"
+}
+
+# If there is no arguments
+if [ "$1" == "" ] || [ "$1" == "help" ]
+then
+    call_help
+
 elif [ "$1" == "create" ]
 then
     # Create folders
@@ -238,10 +248,17 @@ then
 elif [ "$1" == "delete" ]
 then
     # Delete directories
-
-    echo 'Project has been deleted'
-    ./vendor/premake5 clean
-    # TODO: End this
+    read -n 1 -p "Are your sure? This action will delete all your ptoject files [Y/N] -> " confirmation
+    if [ "$confirmation" == "Y" ]; then
+        ./vendor/premake5 clean
+        rm -r ProjectFolder
+        rm -r vendor
+        rm premake5.lua
+        echo 'The project has been deleted'
+    else
+        echo -e "\nAborting..."
+        echo "The project wasn't deleted."
+    fi
 
 elif [ "$1" == "compile" ]
 then
@@ -272,5 +289,7 @@ then
 elif [ "$1" == "clean" ]
 then
     ./vendor/premake5 clean
+else
+    call_help
 fi
 exit
