@@ -14,7 +14,7 @@ create_first_premake_file() {
     echo '    trigger = "clean",'>> premake5.lua
     echo '    description = "Remove all binaries and intermediate binaries, and vs files.",'>> premake5.lua
     echo '    execute = function()'>> premake5.lua
-    echo '        print("Remove binaries")'>> premake5.lua
+    echo '        print("Removing binaries")'>> premake5.lua
     echo '        os.rmdir("./bin")'>> premake5.lua
     echo '        print("Removing intermediate binaries")'>> premake5.lua
     echo '        os.rmdir("./bin-int")'>> premake5.lua
@@ -38,7 +38,7 @@ create_first_premake_file() {
     echo '        if xcodeproj_name[1] ~= nil then' >> premake5.lua
     echo '            os.rmdir(xcodeproj_name[1])' >> premake5.lua
     echo '        end' >> premake5.lua
-    echo '        print("Done")'>> premake5.lua
+    echo '        print("Clean up done.")'>> premake5.lua
     echo '    end'>> premake5.lua
     echo -e '}\n'>> premake5.lua
     echo "newaction {">> premake5.lua
@@ -251,10 +251,12 @@ then
     read -n 1 -p "Are your sure? This action will delete all your ptoject files [Y/N] -> " confirmation
     if [ "$confirmation" == "Y" ]; then
         ./vendor/premake5 clean
+        echo 'Removing ProjectFolder...'
         rm -r ProjectFolder
+        echo 'Removing premake5...'
         rm -r vendor
         rm premake5.lua
-        echo 'The project has been deleted'
+        echo 'The project has been deleted.'
     else
         echo -e "\nAborting..."
         echo "The project wasn't deleted."
@@ -286,9 +288,60 @@ then
     echo -e ""
     ./$var/*/*
     cd ..
+
 elif [ "$1" == "clean" ]
 then
     ./vendor/premake5 clean
+
+# Generate codelite compilation
+elif [ "$1" == "codelite" ]
+then
+    ./vendor/premake5 codelite
+
+# Generate makefile for linux
+elif [ "$1" == "gmake" ]
+then
+    ./vendor/premake5 gmake
+    make
+
+# Generate makefile for linux
+elif [ "$1" == "gmake2" ]
+then
+    ./vendor/premake5 gmake2
+    make
+
+# Generate visual studio project acording with the visual studio's version
+elif [ "$1" == "vs2005" ]
+then
+    ./vendor/premake5 vs2005
+elif [ "$1" == "vs2008" ]
+then
+    ./vendor/premake5 vs2008
+elif [ "$1" == "vs2010" ]
+then
+    ./vendor/premake5 vs2010
+elif [ "$1" == "vs2012" ]
+then
+    ./vendor/premake5 vs2012
+elif [ "$1" == "vs2013" ]
+then
+    ./vendor/premake5 vs2013
+elif [ "$1" == "vs2015" ]
+then
+    ./vendor/premake5 vs2015
+elif [ "$1" == "vs2017" ]
+then
+    ./vendor/premake5 vs2017
+elif [ "$1" == "vs2019" ]
+then
+    ./vendor/premake5 vs2019
+
+# Generate xcode4 for mac
+elif [ "$1" == "xcode4" ]
+then
+    ./vendor/premake5 xcode4
+
+# If the argument doesn't exist, print help
 else
     call_help
 fi
