@@ -123,76 +123,118 @@ create_second_premake_file() {
 }
 
 create_cpp_main_file() {
-    echo -e "#include <iostream>\n" > main.cpp
-    echo -e '#include "program_info.h"\n' >> main.cpp
+    type nul > main.cpp
+    echo -e '#include "programInfo.h"\n' >> main.cpp
+    echo -e "#include <iostream>\n" >> main.cpp
     # echo -e "\n" >> main.cpp 
     # echo -e "\n" makes a paragraph
     echo -e "int main(int argc, char *argv[]) {" >> main.cpp
     echo '   // Enable arguments for our program' >> main.cpp
-    echo -e '   program_inform::show_info(argc, argv);\n' >> main.cpp
+    echo -e '   programInform::showInfo(argc, argv);\n' >> main.cpp
     echo -e '   std::cout << "Hello World!" << std::endl;\n' >> main.cpp
     echo "   return 0;" >> main.cpp
     echo "}">> main.cpp
     # ">" writes and deletes/creates, ">>" update the file
 
-    # Create program_info.cpp file
-    echo -e "#include<iostream>" > program_info.cpp
-    echo -e "#include<string.h>\n" >> program_info.cpp
-    echo -e '#include "program_info.h"\n' >> program_info.cpp
-    echo -e 'namespace program_inform {' >> program_info.cpp
-    echo -e '   void show_info(int argc, char *argv[]) {' >> program_info.cpp
-    echo -e "       // If we don't have arguments" >> program_info.cpp
-    echo -e '       if (argc == 1) return;\n' >> program_info.cpp
-    echo -e '       if (strcmp("--version", argv[1]) == 0) {' >> program_info.cpp
-    echo -e '           std::cout << "v0.0.1" << std::endl;' >> program_info.cpp
-    echo -e '       } else if (strcmp("--name", argv[1]) == 0) {' >> program_info.cpp
-    echo -e '           std::cout << argv[0] << std::endl;' >> program_info.cpp
-    echo -e '       } else if (strcmp("--help", argv[1]) == 0) {' >> program_info.cpp
-    echo -e '           std::cout << "Available arguments:" << std::endl;' >> program_info.cpp
-    echo -e '           std::cout << "--name Tell you the name of the program" << std::endl;' >> program_info.cpp
-    echo -e '           std::cout << "--version Provides you information about the program" << std::endl;' >> program_info.cpp
-    echo -e '       } else {' >> program_info.cpp
-    echo -e '           std::cout << "Argument not recognised. Type --help for more informations." << std::endl;' >> program_info.cpp
-    echo -e '       }\n' >> program_info.cpp
-    echo -e '       // Warn the user that our program only can take one argument' >> program_info.cpp
-    echo -e '       if (argc > 2) {' >> program_info.cpp
-    echo -e '           std::cout << "This program should have only one argument. Type --help for more informations." << std::endl;' >> program_info.cpp
-    echo -e '       }\n' >> program_info.cpp
-    echo -e '       exit(0);' >> program_info.cpp
-    echo -e '   }\n' >> program_info.cpp
-    echo -e '}' >> program_info.cpp
+    # Create programInfo.cpp file
+    echo -e "#include<iostream>" > programInfo.cpp
+    echo -e "#include<string.h>\n" >> programInfo.cpp
+    echo -e '#include "programInfo.h"\n' >> programInfo.cpp
+    echo -e 'namespace programInform {' >> programInfo.cpp
+    echo -e '   void showInfo(int argc, char *argv[]) {' >> programInfo.cpp
+    echo -e "       // If we don't have arguments" >> programInfo.cpp
+    echo -e '       if (argc == 1) return;\n' >> programInfo.cpp
+    echo -e '       if (strcmp("--version", argv[1]) == 0) {' >> programInfo.cpp
+    echo -e '           std::cout << "v0.0.1" << std::endl;' >> programInfo.cpp
+    echo -e '       } else if (strcmp("--name", argv[1]) == 0) {' >> programInfo.cpp
+    echo -e '           std::cout << argv[0] << std::endl;' >> programInfo.cpp
+    echo -e '       } else if (strcmp("--help", argv[1]) == 0) {' >> programInfo.cpp
+    echo -e '           std::cout << "Available arguments:" << std::endl;' >> programInfo.cpp
+    echo -e '           std::cout << "--name Tell you the name of the program" << std::endl;' >> programInfo.cpp
+    echo -e '           std::cout << "--version Provides you information about the program" << std::endl;' >> programInfo.cpp
+    echo -e '       } else {' >> programInfo.cpp
+    echo -e '           std::cout << "Argument not recognised. Type --help for more informations." << std::endl;' >> programInfo.cpp
+    echo -e '       }\n' >> programInfo.cpp
+    echo -e '       // Warn the user that our program only can take one argument' >> programInfo.cpp
+    echo -e '       if (argc > 2) {' >> programInfo.cpp
+    echo -e '           std::cout << "This program should have only one argument. Type --help for more informations." << std::endl;' >> programInfo.cpp
+    echo -e '       }\n' >> programInfo.cpp
+    echo -e '       exit(0);' >> programInfo.cpp
+    echo -e '   }\n' >> programInfo.cpp
+    echo -e '}' >> programInfo.cpp
 }
 
 create_header_file() {
-    echo -e '#pragma once\n' > program_info.h
-    echo -e 'namespace program_inform {' >> program_info.h
-    echo -e '   // argc -> Number of arguments' >> program_info.h    
-    echo -e '   // argv[0] -> Name of the program' >> program_info.h
-    echo -e '   // argv[1] -> First argument' >> program_info.h
-    echo -e '   void show_info(int argc, char *argv[]);\n' >> program_info.h
-    echo -e '} // namespace program_inform\n' >> program_info.h
+    type nul > programInfo.h
+    echo -e '#ifndef PROGRAM_INFO_27072021_H' >> programInfo.h
+    echo -e '#define PROGRAM_INFO_27072021_H\n' >> programInfo.h
+    echo -e 'namespace programInform {' >> programInfo.h
+    echo -e '   // argc -> Number of arguments' >> programInfo.h    
+    echo -e '   // argv[0] -> Name of the program' >> programInfo.h
+    echo -e '   // argv[1] -> First argument' >> programInfo.h
+    echo -e '   void showInfo(int argc, char *argv[]);\n' >> programInfo.h
+    echo -e '} // namespace programInform\n' >> programInfo.h
+    echo '#endif' >> programInfo.h
 }
 
 call_help() {
     echo -e "\n"
     echo -e "Enter 'beaver action' where action is one of the following:\n"
-    echo   "create            Will create the resources needed to a new project into the current directory."
-    echo   "compile           Will generate make file then compile using the make file."
-    echo   "run               Will generate make file then compile using the make file then run the project."
-    echo   "clean             Remove all binaries and intermediate binaries and project files."
-    echo   "delete            Will delete all project files. Be careful."
-    echo   "gmake             Generate GNU makefiles for Linux."
-    echo   "gmake2            Generate GNU makefiles for Linux."
-    echo   "vs2019            Generate Visual Studio 2019 project files."
-    echo   "vs2017            Generate Visual Studio 2017 project files."
-    echo   "vs2015            Generate Visual Studio 2015 project files."
-    echo   "vs2013            Generate Visual Studio 2013 project files."
-    echo   "vs2012            Generate Visual Studio 2012 project files."
-    echo   "vs2010            Generate Visual Studio 2010 project files."
-    echo   "vs2008            Generate Visual Studio 2008 project files."
-    echo   "vs2005            Generate Visual Studio 2005 project files."
-    echo   "xcode4            Generate Apple Xcode 4 project files."
-    echo   "codelite          Generate CodeLite project files."
+    echo    "create     Will create the resources needed to a new project into the current directory."
+    echo    "compile    Will generate make file then compile using the make file."
+    echo    "run        Will generate make file then compile using the make file then run the project."
+    echo    "clean      Remove all binaries and intermediate binaries and project files."
+    echo    "delete     Will delete all project files. Be careful."
+    echo -e "\nType beaver --dam_blueprint for more information"
+}
+
+dam_blueprint() {
+    echo -e "Enter 'beaver arg1 arg2' according with:\n"
+    echo    " => create (Will create the resources needed to a new project into the current directory if it is a empty directory):"
+    echo -e "\ncreate -> arg1"
+    echo    "projectName -> arg2"
+    echo    "ex.: beaver create HelloWorld"
+    echo    "- - - - - - - - - - - - - - - -"
+    echo    " => run (Will run the program based on the operating system needs)."
+    echo    "Works only if we are in the same folder which your project is:"
+    echo -e "\nrun -> arg1"
+    echo    "arg2 doesn't exist"
+    echo    "ex.: beaver run"
+    echo    "- - - - - - - - - - - - - - - -"
+    echo    " => compile (We have some different ways to compile your program depending in your needs)."
+    echo    "Works only if we are in the same folder which your project is:"
+    echo -e "\ncompile -> arg1"
+    echo    "arg2 can be"
+    echo    "gmake             Generate GNU makefiles for Linux."
+    echo    "gmake2            Generate GNU makefiles for Linux."
+    echo    "vs2019            Generate Visual Studio 2019 project files."
+    echo    "vs2017            Generate Visual Studio 2017 project files."
+    echo    "vs2015            Generate Visual Studio 2015 project files."
+    echo    "vs2013            Generate Visual Studio 2013 project files."
+    echo    "vs2012            Generate Visual Studio 2012 project files."
+    echo    "vs2010            Generate Visual Studio 2010 project files."
+    echo    "vs2008            Generate Visual Studio 2008 project files."
+    echo    "vs2005            Generate Visual Studio 2005 project files."
+    echo    "xcode4            Generate Apple Xcode 4 project files."
+    echo    "codelite          Generate CodeLite project files."
+    echo -e "\n For default (when arg2 doesn't exist, ex.: beaver compile) are ran the commads:"
+    echo    "   ./vendor/premake5 gmake"
+    echo    "   make"
+    echo    " So, we will generate a make file to build our program."
+    echo    "- - - - - - - - - - - - - - - -"
+    echo    " => clean (Removes bin and bin-int folders and the files created during the compilation)."
+    echo    "Works only if we are in the same folder which your project is:"
+    echo -e "\nclean -> arg1"
+    echo    "arg2 doesn't exist"
+    echo    "ex.: beaver clean"
+    echo    "- - - - - - - - - - - - - - - -"
+    echo    " => delete (Deletes all project files. One more time, be careful.)"
+    echo -e "\ndelete -> arg1"
+    echo    "arg2 doesn't exist"
+    echo -e "ex.: beaver delete"
+    echo    "- - - - - - - - - - - - - - - -"
+    echo    "And, if you're in the same folder your project is in, this is for the adventurers ;)"
+    echo -e "\n./vendor/premake5 --help"
 }
 
 # If there is no arguments
@@ -202,6 +244,30 @@ then
 
 elif [ "$1" == "create" ]
 then
+
+    # Creates a folder if user input a name for it.
+    # ex.: beaver create HelloWorld
+    # Will create a folder named HelloWorld
+    if [ ! -z "$2" ] # -z will test if the argument is a null string
+    then    
+        # Check if user input other argument, that creates an unvalid project
+        if [ ! -z "$3" ]
+        then
+            echo "Error: Project shouldn't have a name with whitespaces"
+            exit
+        fi
+
+        mkdir $2
+        cd $2
+    fi
+
+    # If the direcoty isn't empty, don't create a new project
+    if [ "$(ls)" ] 
+    then
+        echo 'Error: The folder is not empty.'
+        exit
+    fi
+
     # Create folders
     mkdir ProjectFolder
     mkdir vendor
@@ -245,6 +311,7 @@ then
     echo -e '\nDone.'
     
     cd ..
+
 elif [ "$1" == "delete" ]
 then
     # Delete directories
@@ -264,9 +331,60 @@ then
 
 elif [ "$1" == "compile" ]
 then
-    # Create makefile gmake
-    ./vendor/premake5 gmake
-    make
+    # If we have another argument, it means we are requesting for a more precise compilation
+    if [ -z "$2" ] 
+    then
+        # Create makefile gmake
+        ./vendor/premake5 gmake
+        make
+    else
+        # Generate codelite compilation
+        if [ "$2" == "codelite" ]
+        then
+            ./vendor/premake5 codelite
+
+        # Generate makefile for linux
+        elif [ "$2" == "gmake" ]
+        then
+            ./vendor/premake5 gmake
+
+        # Generate makefile for linux
+        elif [ "$2" == "gmake2" ]
+        then
+            ./vendor/premake5 gmake2
+
+        # Generate visual studio project acording with the visual studio's version
+        elif [ "$2" == "vs2005" ]
+        then
+            ./vendor/premake5 vs2005
+        elif [ "$2" == "vs2008" ]
+        then
+            ./vendor/premake5 vs2008
+        elif [ "$2" == "vs2010" ]
+        then
+            ./vendor/premake5 vs2010
+        elif [ "$2" == "vs2012" ]
+        then
+            ./vendor/premake5 vs2012
+        elif [ "$2" == "vs2013" ]
+        then
+            ./vendor/premake5 vs2013
+        elif [ "$2" == "vs2015" ]
+        then
+            ./vendor/premake5 vs2015
+        elif [ "$2" == "vs2017" ]
+        then
+            ./vendor/premake5 vs2017
+        elif [ "$2" == "vs2019" ]
+        then
+            ./vendor/premake5 vs2019
+
+        # Generate xcode4 for mac 
+        elif [ "$2" == "xcode4" ]
+        then
+            ./vendor/premake5 xcode4
+        fi
+    fi    
 
 elif [ "$1" == "run" ]
 then
@@ -292,53 +410,10 @@ elif [ "$1" == "clean" ]
 then
     ./vendor/premake5 clean
 
-# Generate codelite compilation
-elif [ "$1" == "codelite" ]
+# A deeper help for user -- will show user all beaver's functionalities
+elif [ "$1" == "--dam_blueprint" ]
 then
-    ./vendor/premake5 codelite
-
-# Generate makefile for linux
-elif [ "$1" == "gmake" ]
-then
-    ./vendor/premake5 gmake
-    make
-
-# Generate makefile for linux
-elif [ "$1" == "gmake2" ]
-then
-    ./vendor/premake5 gmake2
-    make
-
-# Generate visual studio project acording with the visual studio's version
-elif [ "$1" == "vs2005" ]
-then
-    ./vendor/premake5 vs2005
-elif [ "$1" == "vs2008" ]
-then
-    ./vendor/premake5 vs2008
-elif [ "$1" == "vs2010" ]
-then
-    ./vendor/premake5 vs2010
-elif [ "$1" == "vs2012" ]
-then
-    ./vendor/premake5 vs2012
-elif [ "$1" == "vs2013" ]
-then
-    ./vendor/premake5 vs2013
-elif [ "$1" == "vs2015" ]
-then
-    ./vendor/premake5 vs2015
-elif [ "$1" == "vs2017" ]
-then
-    ./vendor/premake5 vs2017
-elif [ "$1" == "vs2019" ]
-then
-    ./vendor/premake5 vs2019
-
-# Generate xcode4 for mac 
-elif [ "$1" == "xcode4" ]
-then
-    ./vendor/premake5 xcode4
+    dam_blueprint
 
 # If the argument doesn't exist, print help
 else
