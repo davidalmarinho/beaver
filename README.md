@@ -48,7 +48,7 @@ After, download beaver and put it in this folder.
 
 
 ```shell
-git clone git@github.com:davidalmarinho/beaver.git  ~/.beaver
+wget -O ~/.beaver/beaver https://github.com/davidalmarinho/beaver/releases/download/v1.0.0-release-l/beaver
 ```
 
 #### Set beaver's path
